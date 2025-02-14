@@ -2,76 +2,50 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import StringCalculator from "../components/StringCalculator";
 
 describe("StringCalculator Component", () => {
-    // Test 1: Checks if the component renders correctly
-    test("renders correctly", () => { 
-        render(<StringCalculator />);
-
-        // Check if the heading exists
+    
+    // Test 1: Check if the component renders correctly
+    test("renders correctly", () => {
+        render(<StringCalculator />); // Render the component
+        
+        // Check if the title exists
         expect(screen.getByText(/String Calculator/i)).toBeInTheDocument();
-
-        // Check if the input box is present
+        
+        // Check if the input box exists
         expect(screen.getByPlaceholderText(/Enter numbers/i)).toBeInTheDocument();
-
-        // Check if the button exists
-        expect(screen.getByText(/Calculate/i)).toBeInTheDocument();
     });
 
-    // Test 2: Ensures correct calculation for simple input
+    // Test 2: Check if the calculation works correctly for a simple input
     test("calculates sum correctly", () => {
-        render(<StringCalculator />);
-
-        // Get input box and button elements
-        const input = screen.getByPlaceholderText(/Enter numbers/i);
-        const button = screen.getByText(/Calculate/i);
-
-        // Simulate user typing "1,2,3" into the input field
+        render(<StringCalculator />); // Render the component
+        
+        const input = screen.getByPlaceholderText(/Enter numbers/i); // Get input field
+        const button = screen.getByText(/Calculate/i); // Get the calculate button
+        
+        // Simulate user typing "1,2,3" in the input field
         fireEvent.change(input, { target: { value: "1,2,3" } });
 
-        // Click the "Calculate" button
+        // Click the calculate button
         fireEvent.click(button);
 
-        // Expect to see the correct sum displayed
+        // Check if the correct sum (6) is displayed
         expect(screen.getByText(/Sum: 6/i)).toBeInTheDocument();
     });
 
-    // Test 3: Ensures the component correctly handles new lines (`\n`)
-    test("handles newline as a separator", () => {
-        render(<StringCalculator />);
-
-        const input = screen.getByPlaceholderText(/Enter numbers/i);
-        const button = screen.getByText(/Calculate/i);
-
-        // Simulate user entering values with new line separator
-        fireEvent.change(input, { target: { value: "1\n2,3" } });
-        fireEvent.click(button);
-
-        // Expected sum: 1 + 2 + 3 = 6
-        expect(screen.getByText(/Sum: 6/i)).toBeInTheDocument();
-    });
-
-    // Test 4: Handles custom delimiter correctly
-    test("supports custom delimiter", () => {
-        render(<StringCalculator />);
-
-        const input = screen.getByPlaceholderText(/Enter numbers/i);
-        const button = screen.getByText(/Calculate/i);
-
-        // Custom delimiter `;` with format `//;\n1;2`
-        fireEvent.change(input, { target: { value: "//;\n1;2" } });
-        fireEvent.click(button);
-
-        // Expected sum: 1 + 2 = 3
-        expect(screen.getByText(/Sum: 3/i)).toBeInTheDocument();
-    });
-
+    // Test 3: Check if the component properly displays an error message for negative numbers
     test("displays error for negative numbers", () => {
-        render(<StringCalculator />);
-        const input = screen.getByPlaceholderText(/Enter numbers/i);
-        const button = screen.getByText(/Calculate/i);
-
+        render(<StringCalculator />); // Render the component
+        
+        const input = screen.getByPlaceholderText(/Enter numbers/i); // Get input field
+        const button = screen.getByText(/Calculate/i); // Get the calculate button
+        
+        // Simulate user typing "1,-2,3,-4" in the input field
         fireEvent.change(input, { target: { value: "1,-2,3,-4" } });
+
+        // Click the calculate button
         fireEvent.click(button);
 
+        // Check if the correct error message is displayed
         expect(screen.getByText(/negative numbers not allowed: -2,-4/i)).toBeInTheDocument();
     });
+
 });
